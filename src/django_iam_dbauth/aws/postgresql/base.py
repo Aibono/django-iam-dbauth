@@ -1,3 +1,4 @@
+import os
 import getpass
 
 import boto3
@@ -10,8 +11,9 @@ class DatabaseWrapper(base.DatabaseWrapper):
     def get_connection_params(self):
         params = super().get_connection_params()
         enabled = params.pop('use_iam_auth', None)
+        region = params.pop('aws_region', os.environ.get('AWS_DEFAULT_REGION'))
         if enabled:
-            rds_client = boto3.client("rds")
+            rds_client = boto3.client("rds", region_name=region)
 
             hostname = params.get('host')
             hostname = resolve_cname(hostname) if hostname else "localhost"
