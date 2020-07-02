@@ -17,3 +17,6 @@ def resolve_cname(hostname):
                 return answer.to_text().strip('.')
     except DNSException:
         return hostname
+    except dns.resolver.NoAnswer:
+        # This exception is raised when the hostname is 'A' record instead of 'CNAME' record
+        return hostname
